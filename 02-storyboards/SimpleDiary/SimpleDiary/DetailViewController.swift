@@ -25,6 +25,19 @@ class DetailViewController: UIViewController {
     
     func didWeatherChange() {
         NSLog("weather changed: %d", self.weatherSegments.selectedSegmentIndex)
+        setBackgroundColor(self.weatherSegments.selectedSegmentIndex)
+    }
+    
+    func setBackgroundColor(segmentIndex: Int) {
+        let weather: Weather = Weather(rawValue: segmentIndex)!
+        switch weather {
+        case Weather.Cloudy:
+            self.view.backgroundColor = UIColor.cyanColor()
+        case Weather.Rain:
+            self.view.backgroundColor = UIColor.grayColor()
+        case Weather.Sunny:
+            self.view.backgroundColor = UIColor.yellowColor()
+        }
     }
     
     func saveDiaryRecord() {
@@ -61,6 +74,7 @@ class DetailViewController: UIViewController {
             
             if let weather = self.weatherSegments {
                 weather.selectedSegmentIndex = detail.weather!.rawValue
+                setBackgroundColor(detail.weather!.rawValue)
             }
         }
     }
