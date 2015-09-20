@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		505E3D831BAC7230004002F6 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505E3D821BAC7230004002F6 /* Weather.swift */; };
+		506294321BAD407D00561D7A /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506294311BAD407D00561D7A /* SettingsViewController.swift */; };
+		506294341BAD415F00561D7A /* DateSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506294331BAD415F00561D7A /* DateSetting.swift */; };
+		506294361BADEE8F00561D7A /* SettingsViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506294351BADEE8F00561D7A /* SettingsViewDelegate.swift */; };
 		50776C9E1BAC4C2900C4C04F /* DiaryRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50776C9D1BAC4C2900C4C04F /* DiaryRecord.swift */; };
 		50A6EDDA1BAC49F10014EE60 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A6EDD91BAC49F10014EE60 /* AppDelegate.swift */; };
 		50A6EDDC1BAC49F10014EE60 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A6EDDB1BAC49F10014EE60 /* MasterViewController.swift */; };
@@ -30,6 +33,9 @@
 
 /* Begin PBXFileReference section */
 		505E3D821BAC7230004002F6 /* Weather.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
+		506294311BAD407D00561D7A /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		506294331BAD415F00561D7A /* DateSetting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateSetting.swift; sourceTree = "<group>"; };
+		506294351BADEE8F00561D7A /* SettingsViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewDelegate.swift; sourceTree = "<group>"; };
 		50776C9D1BAC4C2900C4C04F /* DiaryRecord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiaryRecord.swift; sourceTree = "<group>"; };
 		50A6EDD41BAC49F10014EE60 /* SimpleDiary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleDiary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50A6EDD81BAC49F10014EE60 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -92,6 +98,9 @@
 				50A6EDD71BAC49F10014EE60 /* Supporting Files */,
 				50776C9D1BAC4C2900C4C04F /* DiaryRecord.swift */,
 				505E3D821BAC7230004002F6 /* Weather.swift */,
+				506294311BAD407D00561D7A /* SettingsViewController.swift */,
+				506294351BADEE8F00561D7A /* SettingsViewDelegate.swift */,
+				506294331BAD415F00561D7A /* DateSetting.swift */,
 			);
 			path = SimpleDiary;
 			sourceTree = "<group>";
@@ -222,10 +231,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				50776C9E1BAC4C2900C4C04F /* DiaryRecord.swift in Sources */,
+				506294341BAD415F00561D7A /* DateSetting.swift in Sources */,
 				50A6EDDE1BAC49F10014EE60 /* DetailViewController.swift in Sources */,
 				50A6EDDC1BAC49F10014EE60 /* MasterViewController.swift in Sources */,
+				506294361BADEE8F00561D7A /* SettingsViewDelegate.swift in Sources */,
 				50A6EDDA1BAC49F10014EE60 /* AppDelegate.swift in Sources */,
 				505E3D831BAC7230004002F6 /* Weather.swift in Sources */,
+				506294321BAD407D00561D7A /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

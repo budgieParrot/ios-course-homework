@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MasterViewController: UITableViewController {
+class MasterViewController: UITableViewController, SettingsViewDelegate {
     
     @IBOutlet var recordsTable: UITableView!
     
@@ -17,6 +17,8 @@ class MasterViewController: UITableViewController {
     var objects = [DiaryRecord]()
     
     var lastClickedRowIndex: Int = -1
+    
+    var dateSetting: DateSetting = DateSetting.ShortFormat
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -30,6 +32,36 @@ class MasterViewController: UITableViewController {
         let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
         self.navigationItem.rightBarButtonItem = addButton
         
+        setupObjects()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        NSLog("in viewDidAppear")
+        if(self.lastClickedRowIndex != -1) {
+            // We returned from detail controller
+            if let detailVC = self.detailViewController {
+                if(self.lastClickedRowIndex > objects.endIndex) {
+                    objects.append(detailVC.detailItem!)
+                } else {
+                    objects[lastClickedRowIndex] = detailVC.detailItem!
+                }
+                if let table = recordsTable {
+                    objects.sort({(dr1: DiaryRecord, dr2: DiaryRecord) -> Bool
+                        in return (dr1.creationDate.compare(dr2.creationDate) == NSComparisonResult.OrderedDescending)})
+                    table.reloadData()
+                }
+                
+                self.lastClickedRowIndex = -1
+            }
+        }
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    func setupObjects() {
         var cal = NSCalendar.currentCalendar()
         let date1 = NSDateComponents()
         date1.year = 2015
@@ -66,32 +98,6 @@ class MasterViewController: UITableViewController {
         objects.sort({(dr1: DiaryRecord, dr2: DiaryRecord) -> Bool
             in return (dr1.creationDate.compare(dr2.creationDate) == NSComparisonResult.OrderedDescending)})
     }
-    
-    override func viewDidAppear(animated: Bool) {
-        NSLog("in viewDidAppear")
-        if(self.lastClickedRowIndex != -1) {
-            // We returned from detail controller
-            if let detailVC = self.detailViewController {
-                if(self.lastClickedRowIndex > objects.endIndex) {
-                    objects.append(detailVC.detailItem!)
-                } else {
-                    objects[lastClickedRowIndex] = detailVC.detailItem!
-                }
-                if let table = recordsTable {
-                    objects.sort({(dr1: DiaryRecord, dr2: DiaryRecord) -> Bool
-                        in return (dr1.creationDate.compare(dr2.creationDate) == NSComparisonResult.OrderedDescending)})
-                    table.reloadData()
-                }
-                
-                self.lastClickedRowIndex = -1
-            }
-        }
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
 
     func insertNewObject(sender: AnyObject) {
         self.lastClickedRowIndex = objects.endIndex + 1
@@ -101,6 +107,14 @@ class MasterViewController: UITableViewController {
     
     func openSettings() {
         NSLog("in openSettings")
+        let settingsNavController = self.storyboard?.instantiateViewControllerWithIdentifier("settingsNavController") as! UINavigationController
+        
+        let settingsViewController = settingsNavController.topViewController as! SettingsViewController
+        settingsViewController.delegate = self
+        settingsViewController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
+        settingsViewController.modalTransitionStyle = UIModalTransitionStyle.CoverVertical
+        
+        presentViewController(settingsNavController, animated: true, completion: nil)
     }
 
     // MARK: - Segues
@@ -135,7 +149,9 @@ class MasterViewController: UITableViewController {
         if let readableDate = humanReadableDate(object.creationDate) {
             cell.detailTextLabel!.text = readableDate
         } else {
-            cell.detailTextLabel!.text = object.formattedDate()
+            let date: String
+            self.dateSetting.rawValue == DateSetting.ShortFormat.rawValue ? (date = object.formattedDateShort()) : (date = object.formattedDateLong())
+            cell.detailTextLabel!.text = date
         }
         
         return cell
@@ -183,6 +199,15 @@ class MasterViewController: UITableViewController {
         }
         
         return formatted
+    }
+    
+    func didChooseSetting(selectedSetting: DateSetting?) {
+        if let setting = selectedSetting {
+            self.dateSetting = setting
+            if let table = self.recordsTable {
+                table.reloadData()
+            }
+        }
     }
 
 }

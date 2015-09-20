@@ -23,10 +23,20 @@ class DiaryRecord {
         self.weather = Weather.Cloudy
     }
     
-    func formattedDate() -> String {
+    func formattedDateShort() -> String {
         let dateFormatter: NSDateFormatter = NSDateFormatter()
         dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle
-        dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
+        dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
+        
+        let formattedDate = dateFormatter.stringFromDate(creationDate)
+        
+        return formattedDate
+    }
+    
+    func formattedDateLong() -> String {
+        let dateFormatter: NSDateFormatter = NSDateFormatter()
+        dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle
+        dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
         
         let formattedDate = dateFormatter.stringFromDate(creationDate)
         

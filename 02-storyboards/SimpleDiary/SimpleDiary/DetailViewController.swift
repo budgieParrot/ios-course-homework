@@ -15,7 +15,6 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var entryText: UITextField!
     
     @IBOutlet weak var weatherSegments: UISegmentedControl!
-    
     var detailItem: DiaryRecord? {
         didSet {
             // Update the view.
@@ -32,11 +31,14 @@ class DetailViewController: UIViewController {
         let weather: Weather = Weather(rawValue: segmentIndex)!
         switch weather {
         case Weather.Cloudy:
-            self.view.backgroundColor = UIColor.cyanColor()
+            self.view.backgroundColor = UIColor(patternImage: UIImage(named: "bg-cloudy")!)
+            weatherSegments.tintColor = UIColor.whiteColor()
         case Weather.Rain:
-            self.view.backgroundColor = UIColor.grayColor()
+            self.view.backgroundColor = UIColor(patternImage: UIImage(named: "bg-rainy")!)
+            weatherSegments.tintColor = UIColor.blackColor()
         case Weather.Sunny:
-            self.view.backgroundColor = UIColor.yellowColor()
+            self.view.backgroundColor = UIColor(patternImage: UIImage(named: "bg-sunny")!)
+            weatherSegments.tintColor = UIColor.blueColor()
         }
     }
     
@@ -62,7 +64,7 @@ class DetailViewController: UIViewController {
     func configureView() {
         // Update the user interface for the detail item.
         if let detail: DiaryRecord = self.detailItem {
-            self.navigationItem.title = detail.formattedDate()
+            self.navigationItem.title = detail.formattedDateShort()
             
             if let title = self.titleText {
                 title.text = detail.name
