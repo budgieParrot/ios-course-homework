@@ -27,7 +27,7 @@ class DiaryRecord {
         let dateFormatter: NSDateFormatter = NSDateFormatter()
         dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle
         dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
-        
+        dateFormatter.doesRelativeDateFormatting = true
         let formattedDate = dateFormatter.stringFromDate(creationDate)
         
         return formattedDate
@@ -37,7 +37,7 @@ class DiaryRecord {
         let dateFormatter: NSDateFormatter = NSDateFormatter()
         dateFormatter.timeStyle = NSDateFormatterStyle.NoStyle
         dateFormatter.dateStyle = NSDateFormatterStyle.LongStyle
-        
+        dateFormatter.doesRelativeDateFormatting = true
         let formattedDate = dateFormatter.stringFromDate(creationDate)
         
         return formattedDate

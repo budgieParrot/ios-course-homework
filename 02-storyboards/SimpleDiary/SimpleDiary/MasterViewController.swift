@@ -146,13 +146,11 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
         let object = objects[indexPath.row]
         cell.textLabel!.text = object.name
         
-        if let readableDate = humanReadableDate(object.creationDate) {
-            cell.detailTextLabel!.text = readableDate
-        } else {
-            let date: String
-            self.dateSetting.rawValue == DateSetting.ShortFormat.rawValue ? (date = object.formattedDateShort()) : (date = object.formattedDateLong())
-            cell.detailTextLabel!.text = date
-        }
+        
+        let date: String
+        self.dateSetting.rawValue == DateSetting.ShortFormat.rawValue ? (date = object.formattedDateShort()) : (date = object.formattedDateLong())
+        cell.detailTextLabel!.text = date
+        
         
         return cell
     }
@@ -169,36 +167,6 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
         } else if editingStyle == .Insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
         }
-    }
-    
-    func humanReadableDate(date: NSDate) -> String? {
-        var formatted: String?
-        
-        let currentCal = NSCalendar.currentCalendar()
-        let dateCal = NSCalendar.currentCalendar()
-        
-        let currentComponents = currentCal.components(NSCalendarUnit.CalendarUnitYear | NSCalendarUnit.CalendarUnitMonth | NSCalendarUnit.CalendarUnitDay | NSCalendarUnit.CalendarUnitHour | NSCalendarUnit.CalendarUnitMinute, fromDate: NSDate())
-        let dateComponents = dateCal.components(NSCalendarUnit.CalendarUnitYear | NSCalendarUnit.CalendarUnitMonth | NSCalendarUnit.CalendarUnitDay | NSCalendarUnit.CalendarUnitHour | NSCalendarUnit.CalendarUnitMinute, fromDate: date)
-        
-        if(dateComponents.year == currentComponents.year && dateComponents.month == currentComponents.month) {
-            if(dateComponents.day == currentComponents.day) {
-                if(dateComponents.hour == currentComponents.hour) {
-                    if(dateComponents.minute == currentComponents.minute) {
-                        formatted = "Just now"
-                    } else {
-                        formatted = String(format: "%d minutes ago", (currentComponents.minute - dateComponents.minute))
-                    }
-                } else {
-                    formatted = String(format: "%d hours ago", (currentComponents.hour - dateComponents.hour))
-                }
-            } else {
-                if(currentComponents.day - dateComponents.day == 1) {
-                    formatted = "Yesterday"
-                }
-            }
-        }
-        
-        return formatted
     }
     
     func didChooseSetting(selectedSetting: DateSetting?) {
