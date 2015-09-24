@@ -12,6 +12,8 @@ class SettingsViewController: UITableViewController {
 
     var selectedSetting: DateSetting?
     
+    var selectedIndexPath: NSIndexPath?
+    
     var delegate: SettingsViewDelegate?
     
     override func viewDidLoad() {
@@ -19,12 +21,28 @@ class SettingsViewController: UITableViewController {
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Done, target: self, action: "selectSetting")
         
-        self.tableView.selectRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), animated: true, scrollPosition: UITableViewScrollPosition.None)
+        selectedIndexPath = NSIndexPath(forRow: selectedSetting!.rawValue, inSection: 0)
+        self.tableView.reloadData()
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+        
+        if(indexPath == selectedIndexPath) {
+            cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+        } else {
+            cell.accessoryType = UITableViewCellAccessoryType.None
+        }
+        
+        return cell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         NSLog("didSelectRow")
         selectedSetting = DateSetting(rawValue: indexPath.row)
+        
+        selectedIndexPath = indexPath
+        tableView.reloadData()
     }
     
     func selectSetting() {
