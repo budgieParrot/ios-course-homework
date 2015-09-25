@@ -9,11 +9,11 @@
 import UIKit
 import CoreData
 
-class DetailViewController: UIViewController {
+class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate {
 
     @IBOutlet weak var titleText: UITextField!
-
-    @IBOutlet weak var entryText: UITextField!
+    
+    @IBOutlet weak var entryText: UITextView!
     
     @IBOutlet weak var weatherSegments: UISegmentedControl!
     
@@ -105,13 +105,31 @@ class DetailViewController: UIViewController {
             self.detailItem = NSEntityDescription.insertNewObjectForEntityForName("DiaryRecord", inManagedObjectContext: managedObjectContext!) as? DiaryRecord
             self.detailItem?.setValue(NSDate(), forKey: "creationDate")
         }
+        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        if let entry = entryText {
+            entry.becomeFirstResponder()
+        }
+        
+        return true
+    }
+    
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        if(text == "\n") {
+            if let entry = entryText {
+                entry.resignFirstResponder()
+            }
+        }
+        
+        return true
+    }
+    
 }
 
