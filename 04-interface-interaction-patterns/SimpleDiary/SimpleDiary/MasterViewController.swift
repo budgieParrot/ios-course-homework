@@ -11,11 +11,18 @@ import CoreData
 
 class MasterViewController: UITableViewController, SettingsViewDelegate {
     
+    private let TODAY = "Today"
+    private let THIS_WEEK = "This week"
+    private let THIS_MONTH = "This month"
+    private let EARLIER = "Earlier"
+    
     @IBOutlet var recordsTable: UITableView!
     
     weak var detailViewController: DetailViewController?
 
     var objects = [DiaryRecord]()
+    
+    var sortedObjects:NSMutableDictionary?
     
     var lastClickedRowIndex: Int = -1
     
@@ -51,6 +58,7 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
                 if let table = recordsTable {
                     objects.sortInPlace({(dr1: DiaryRecord, dr2: DiaryRecord) -> Bool
                         in return (dr1.creationDate!.compare(dr2.creationDate!) == NSComparisonResult.OrderedDescending)})
+                    sortedObjects = sortBySections()
                     table.reloadData()
                 }
                 
@@ -77,6 +85,7 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
         
         objects.sortInPlace({(dr1: DiaryRecord, dr2: DiaryRecord) -> Bool
             in return ((dr1.valueForKey("creationDate") as! NSDate).compare(dr2.valueForKey("creationDate") as! NSDate) == NSComparisonResult.OrderedDescending)})
+        sortedObjects = sortBySections()
     }
 
     func insertNewObject(sender: AnyObject) {
@@ -112,21 +121,92 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
             }
         }
     }
+    
+    func sortBySections() -> NSMutableDictionary {
+        var today = [DiaryRecord]()
+        var thisWeek = [DiaryRecord]()
+        var thisMonth = [DiaryRecord]()
+        var earlier = [DiaryRecord]()
+        for item in objects {
+            if(isDateInThisUnitRange(item.creationDate!, calendarUnit:NSCalendarUnit.Day)) {
+                NSLog("today")
+                today.append(item)
+            } else if(isDateInThisUnitRange(item.creationDate!, calendarUnit:NSCalendarUnit.WeekOfMonth)) {
+                NSLog("this week")
+                thisWeek.append(item)
+            } else if(isDateInThisUnitRange(item.creationDate!, calendarUnit: NSCalendarUnit.Month)) {
+                NSLog("this month")
+                thisMonth.append(item)
+            } else {
+                NSLog("earlier")
+                earlier.append(item)
+            }
+        }
+        
+        let diaryRecords = NSMutableDictionary()
+        if(today.count > 0) {
+            diaryRecords.setObject(today, forKey: TODAY)
+        }
+        
+        if(thisWeek.count > 0) {
+            diaryRecords.setObject(thisWeek, forKey: THIS_WEEK)
+        }
+        
+        if(thisMonth.count > 0) {
+            diaryRecords.setObject(thisMonth, forKey: THIS_MONTH)
+        }
+        
+        if(earlier.count > 0) {
+            diaryRecords.setObject(today, forKey: EARLIER)
+        }
+        
+        return diaryRecords
+        
+    }
+    
+    func isDateInThisUnitRange(date:NSDate, calendarUnit:NSCalendarUnit) -> Bool {
+        var start:NSDate? = nil
+        var extends:NSTimeInterval = 0
+        let cal = NSCalendar.autoupdatingCurrentCalendar()
+        let today = NSDate()
+        let success = cal.rangeOfUnit(calendarUnit, startDate: &start, interval: &extends, forDate: today)
+        
+        if(!success) {
+            return false
+        }
+        
+        let dateInSecs = date.timeIntervalSinceReferenceDate
+        let dayStartInSecs = start!.timeIntervalSinceReferenceDate
+        if(dateInSecs > dayStartInSecs && dateInSecs < (dayStartInSecs+extends)){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     // MARK: - Table View
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        if let objects = sortedObjects {
+            return objects.count
+        }
+        
         return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return objects.count
+        let header = getHeaderForSection(section)
+        if(header != "") {
+            return (sortedObjects?.objectForKey(header)?.count)!
+        }
+        return 0
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) 
-
-        let object = objects[indexPath.row]
+        let header = getHeaderForSection(indexPath.section)
+        let objects = sortedObjects?.objectForKey(header) as! [DiaryRecord]
+        let object:DiaryRecord = objects[indexPath.row]
         cell.textLabel!.text = object.name
         
         
@@ -149,6 +229,53 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         } else if editingStyle == .Insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+        }
+    }
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let header = getHeaderForSection(section)
+        if(header != "") {
+            return header
+        }
+        return nil
+    }
+    
+    private func getHeaderForSection(section:Int) -> String {
+        switch(section) {
+        case 0:
+            if(sortedObjects?.objectForKey(TODAY) != nil) {
+                return TODAY
+            } else {
+                if(sortedObjects?.objectForKey(THIS_WEEK) != nil) {
+                    return THIS_WEEK
+                } else {
+                    if(sortedObjects?.objectForKey(THIS_MONTH) != nil) {
+                        return THIS_MONTH
+                    } else {
+                        return EARLIER
+                    }
+                }
+            }
+        case 1:
+            if(sortedObjects?.objectForKey(THIS_WEEK) != nil) {
+                return THIS_WEEK
+            } else {
+                if(sortedObjects?.objectForKey(THIS_MONTH) != nil) {
+                    return THIS_MONTH
+                } else {
+                    return EARLIER
+                }
+            }
+        case 2:
+            if(sortedObjects?.objectForKey(THIS_MONTH) != nil) {
+                return THIS_MONTH
+            } else {
+                return EARLIER
+            }
+        case 3:
+            return EARLIER
+        default:
+            return ""
         }
     }
     
