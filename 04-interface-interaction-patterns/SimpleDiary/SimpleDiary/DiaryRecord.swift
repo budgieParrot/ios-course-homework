@@ -46,6 +46,20 @@ class DiaryRecord: NSManagedObject {
         
         return formattedDate
     }
-
+    
+    func weatherIconIdentifier() -> String? {
+        if let w = weather {
+            if(w == 0) {
+                return "cloudy_sm"
+            } else if(w == 1) {
+                return "rain_sm"
+            } else {
+                return "sunny_sm"
+            }
+        }
+        
+        return nil
+    }
+ 
 
 }

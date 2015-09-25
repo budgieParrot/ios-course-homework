@@ -24,7 +24,7 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
     
     var sortedObjects:NSMutableDictionary?
     
-    var lastClickedRowIndex: Int = -1
+    var lastClickedRowIndex: NSIndexPath?
     
     var dateSetting: DateSetting = DateSetting.ShortFormat
     
@@ -47,22 +47,22 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
     
     override func viewDidAppear(animated: Bool) {
         NSLog("in viewDidAppear")
-        if(self.lastClickedRowIndex != -1) {
+        if let detailVC = self.detailViewController {
             // We returned from detail controller
-            if let detailVC = self.detailViewController {
-                if(self.lastClickedRowIndex > objects.endIndex) {
-                    objects.append(detailVC.detailItem!)
-                } else {
-                    objects[lastClickedRowIndex] = detailVC.detailItem!
-                }
-                if let table = recordsTable {
-                    objects.sortInPlace({(dr1: DiaryRecord, dr2: DiaryRecord) -> Bool
-                        in return (dr1.creationDate!.compare(dr2.creationDate!) == NSComparisonResult.OrderedDescending)})
-                    sortedObjects = sortBySections()
-                    table.reloadData()
-                }
-                
-                self.lastClickedRowIndex = -1
+            if let indexPath = self.lastClickedRowIndex {
+                let header = getHeaderForSection(indexPath.section)
+                var objects = sortedObjects?.objectForKey(header) as! [DiaryRecord]
+                objects[indexPath.row] = detailVC.detailItem!
+                self.lastClickedRowIndex = nil
+            } else {
+                self.objects.append(detailVC.detailItem!)
+            }
+            
+            if let table = recordsTable {
+                self.objects.sortInPlace({(dr1: DiaryRecord, dr2: DiaryRecord) -> Bool
+                    in return (dr1.creationDate!.compare(dr2.creationDate!) == NSComparisonResult.OrderedDescending)})
+                sortedObjects = sortBySections()
+                table.reloadData()
             }
         }
     }
@@ -72,7 +72,7 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func setupObjects() {
+    private func setupObjects() {
         let moc = self.managedObjectContext
         let employeesFetch = NSFetchRequest(entityName: "DiaryRecord")
         
@@ -87,9 +87,17 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
             in return ((dr1.valueForKey("creationDate") as! NSDate).compare(dr2.valueForKey("creationDate") as! NSDate) == NSComparisonResult.OrderedDescending)})
         sortedObjects = sortBySections()
     }
+    
+    private func saveObjects() {
+        do {
+            try self.managedObjectContext!.save()
+        } catch {
+            fatalError("Failure to save diary records: \(error)")
+        }
+
+    }
 
     func insertNewObject(sender: AnyObject) {
-        self.lastClickedRowIndex = objects.endIndex + 1
         self.detailViewController = self.storyboard?.instantiateViewControllerWithIdentifier("detailViewController") as? DetailViewController;
         self.detailViewController?.managedObjectContext = self.managedObjectContext
         self.navigationController?.pushViewController(self.detailViewController!, animated: true);
@@ -113,7 +121,10 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow {
-                self.lastClickedRowIndex = indexPath.row
+                self.lastClickedRowIndex = NSIndexPath(forRow: indexPath.row, inSection: indexPath.section)
+                NSLog("lastClickedRow %d", indexPath.row)
+                let header = getHeaderForSection(indexPath.section)
+                let objects = sortedObjects?.objectForKey(header) as! [DiaryRecord]
                 let object = objects[indexPath.row]
                 self.detailViewController = (segue.destinationViewController as! DetailViewController)
                 self.detailViewController?.managedObjectContext = self.managedObjectContext
@@ -122,7 +133,7 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
         }
     }
     
-    func sortBySections() -> NSMutableDictionary {
+    private func sortBySections() -> NSMutableDictionary {
         var today = [DiaryRecord]()
         var thisWeek = [DiaryRecord]()
         var thisMonth = [DiaryRecord]()
@@ -164,7 +175,7 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
         
     }
     
-    func isDateInThisUnitRange(date:NSDate, calendarUnit:NSCalendarUnit) -> Bool {
+    private func isDateInThisUnitRange(date:NSDate, calendarUnit:NSCalendarUnit) -> Bool {
         var start:NSDate? = nil
         var extends:NSTimeInterval = 0
         let cal = NSCalendar.autoupdatingCurrentCalendar()
@@ -203,17 +214,17 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) 
-        let header = getHeaderForSection(indexPath.section)
-        let objects = sortedObjects?.objectForKey(header) as! [DiaryRecord]
-        let object:DiaryRecord = objects[indexPath.row]
-        cell.textLabel!.text = object.name
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
         
-        
-        let date: String
-        self.dateSetting.rawValue == DateSetting.ShortFormat.rawValue ? (date = object.formattedDateShort()) : (date = object.formattedDateLong())
-        cell.detailTextLabel!.text = date
-        
+        if let diaryRecordCell = cell as? DiaryRecordCell {
+            let header = getHeaderForSection(indexPath.section)
+            var objects = sortedObjects?.objectForKey(header) as! [DiaryRecord]
+            let object:DiaryRecord = objects[indexPath.row]
+            diaryRecordCell.titleLabel.text = object.name
+            diaryRecordCell.entryLabel.text = object.body
+            diaryRecordCell.dateLabel.text = self.dateSetting.rawValue == DateSetting.ShortFormat.rawValue ? object.formattedDateShort() : object.formattedDateLong()
+            diaryRecordCell.weatherImage.image = UIImage(named: object.weatherIconIdentifier()!)
+        }
         
         return cell
     }
@@ -225,8 +236,13 @@ class MasterViewController: UITableViewController, SettingsViewDelegate {
 
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            objects.removeAtIndex(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            let header = getHeaderForSection(indexPath.section)
+            var objects = sortedObjects?.objectForKey(header) as! [DiaryRecord]
+            self.managedObjectContext?.deleteObject(objects[indexPath.row])
+            saveObjects()
+            setupObjects()
+            
+            tableView.reloadData()
         } else if editingStyle == .Insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
         }
