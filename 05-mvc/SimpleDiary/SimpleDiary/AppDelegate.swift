@@ -18,10 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
-        let tabViewController = self.window!.rootViewController as! UITabBarController
-        let navigationViewController = tabViewController.childViewControllers[0] as! UINavigationController
-        let masterViewController = navigationViewController.topViewController as! MasterViewController
-        masterViewController.managedObjectContext = self.managedObjectContext
+        MOCHelper.sharedInstance.moc = self.managedObjectContext
         
         return true
     }

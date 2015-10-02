@@ -17,11 +17,60 @@
                     <connections>
                         <segue destination="rS3-R9-Ivy" kind="relationship" relationship="viewControllers" id="1kX-Ly-4ZB"/>
                         <segue destination="MFv-Rm-KCE" kind="relationship" relationship="viewControllers" id="bmm-4d-auG"/>
+                        <segue destination="rcC-vb-8IP" kind="relationship" relationship="viewControllers" id="XHu-4d-cYY"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CgC-er-KGs" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1229" y="30"/>
+            <point key="canvasLocation" x="-1053" y="10"/>
+        </scene>
+        <!--Weather-->
+        <scene sceneID="kg4-nP-rHK">
+            <objects>
+                <viewController id="NaD-Qz-TNt" customClass="WeatherFilterViewController" customModule="SimpleDiary" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="6E6-fZ-Nu4">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="EuY-35-XMQ" detailTextLabel="3jP-AA-hNR" style="IBUITableViewCellStyleSubtitle" id="0Dc-mq-sCj">
+                                <rect key="frame" x="0.0" y="92" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0Dc-mq-sCj" id="rV2-rZ-XeX">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="EuY-35-XMQ">
+                                            <rect key="frame" x="15" y="6" width="31.5" height="19.5"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3jP-AA-hNR">
+                                            <rect key="frame" x="15" y="25.5" width="40.5" height="13.5"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="Ah7-4n-0Wa" kind="show" identifier="showDetail" id="XST-CG-fIg"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Weather" id="T8A-rx-Kkx"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="recordsTable" destination="6E6-fZ-Nu4" id="k3e-eS-IKC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="m9S-hV-vBe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="890.5" y="-908.5"/>
         </scene>
         <!--Master-->
         <scene sceneID="cUi-kZ-frf">
@@ -253,6 +302,25 @@
             </objects>
             <point key="canvasLocation" x="-629" y="821"/>
         </scene>
+        <!--Weather-->
+        <scene sceneID="xvI-G7-UUn">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="rcC-vb-8IP" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Weather" image="sunny_sm" id="sho-SI-wom"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="qtb-ff-MQd">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="NaD-Qz-TNt" kind="relationship" relationship="rootViewController" id="UdM-vW-ROE"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cbf-UO-Ebn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="81" y="-790"/>
+        </scene>
     </scenes>
     <resources>
         <image name="calendar" width="25" height="25"/>
@@ -261,4 +329,7 @@
         <image name="settings" width="38" height="39"/>
         <image name="sunny_sm" width="25" height="25"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="XST-CG-fIg"/>
+    </inferredMetricsTieBreakers>
 </document>

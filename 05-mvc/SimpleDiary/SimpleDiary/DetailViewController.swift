@@ -62,11 +62,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             }
         }
         
-        do {
-            try self.managedObjectContext!.save()
-        } catch {
-            fatalError("Failure to save context: \(error)")
-        }
+        MOCHelper.sharedInstance.saveObjects()
         
         self.navigationController?.popToRootViewControllerAnimated(true)
     }
@@ -101,6 +97,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         
         self.weatherSegments.addTarget(self, action: "didWeatherChange", forControlEvents: UIControlEvents.ValueChanged)
         
+        self.managedObjectContext = MOCHelper.sharedInstance.moc
         if(self.detailItem == nil) {
             self.detailItem = NSEntityDescription.insertNewObjectForEntityForName("DiaryRecord", inManagedObjectContext: managedObjectContext!) as? DiaryRecord
             self.detailItem?.setValue(NSDate(), forKey: "creationDate")

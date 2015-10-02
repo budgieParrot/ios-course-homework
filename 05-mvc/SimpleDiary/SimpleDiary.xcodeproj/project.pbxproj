@@ -19,6 +19,8 @@
 		501D8E141BB0915D0029F014 /* SimpleDiaryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501D8E131BB0915D0029F014 /* SimpleDiaryUITests.swift */; };
 		502FDCAC1BB09AC2002A6FC1 /* DiaryRecord+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 502FDCA81BB09AC2002A6FC1 /* DiaryRecord+CoreDataProperties.swift */; settings = {ASSET_TAGS = (); }; };
 		502FDCAE1BB0A203002A6FC1 /* DiaryRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 502FDCA91BB09AC2002A6FC1 /* DiaryRecord.swift */; };
+		505997D71BBEE6C4009058FA /* WeatherFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505997D61BBEE6C4009058FA /* WeatherFilterViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		505997D91BBEEC4F009058FA /* MOCHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 505997D81BBEEC4F009058FA /* MOCHelper.swift */; settings = {ASSET_TAGS = (); }; };
 		509559E81BBADCC00057ECCF /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509559E71BBADCC00057ECCF /* Weather.swift */; };
 		509559EC1BBADF180057ECCF /* DateSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509559E91BBADF180057ECCF /* DateSetting.swift */; };
 		509559ED1BBADF180057ECCF /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509559EA1BBADF180057ECCF /* SettingsViewController.swift */; };
@@ -61,6 +63,8 @@
 		501D8E151BB0915D0029F014 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		502FDCA81BB09AC2002A6FC1 /* DiaryRecord+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiaryRecord+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		502FDCA91BB09AC2002A6FC1 /* DiaryRecord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiaryRecord.swift; sourceTree = "<group>"; };
+		505997D61BBEE6C4009058FA /* WeatherFilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherFilterViewController.swift; sourceTree = "<group>"; };
+		505997D81BBEEC4F009058FA /* MOCHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MOCHelper.swift; sourceTree = "<group>"; };
 		509559E71BBADCC00057ECCF /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		509559E91BBADF180057ECCF /* DateSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateSetting.swift; sourceTree = "<group>"; };
 		509559EA1BBADF180057ECCF /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -130,6 +134,8 @@
 				501D8DF01BB0915C0029F014 /* SimpleDiary.xcdatamodeld */,
 				502FDCA81BB09AC2002A6FC1 /* DiaryRecord+CoreDataProperties.swift */,
 				502FDCA91BB09AC2002A6FC1 /* DiaryRecord.swift */,
+				505997D61BBEE6C4009058FA /* WeatherFilterViewController.swift */,
+				505997D81BBEEC4F009058FA /* MOCHelper.swift */,
 			);
 			path = SimpleDiary;
 			sourceTree = "<group>";
@@ -286,6 +292,7 @@
 				509559EC1BBADF180057ECCF /* DateSetting.swift in Sources */,
 				509559ED1BBADF180057ECCF /* SettingsViewController.swift in Sources */,
 				509559E81BBADCC00057ECCF /* Weather.swift in Sources */,
+				505997D91BBEEC4F009058FA /* MOCHelper.swift in Sources */,
 				502FDCAE1BB0A203002A6FC1 /* DiaryRecord.swift in Sources */,
 				50B884C91BB5EDAC00910FBB /* DatePickerDelegate.swift in Sources */,
 				502FDCAC1BB09AC2002A6FC1 /* DiaryRecord+CoreDataProperties.swift in Sources */,
@@ -294,6 +301,7 @@
 				501D8DF21BB0915C0029F014 /* SimpleDiary.xcdatamodeld in Sources */,
 				501D8DF41BB0915D0029F014 /* MasterViewController.swift in Sources */,
 				501D8DF61BB0915D0029F014 /* DetailViewController.swift in Sources */,
+				505997D71BBEE6C4009058FA /* WeatherFilterViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

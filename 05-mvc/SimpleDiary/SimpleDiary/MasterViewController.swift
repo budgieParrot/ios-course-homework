@@ -27,8 +27,6 @@ class MasterViewController: UITableViewController {
     var lastClickedRowIndex: NSIndexPath?
     
     var dateSetting: DateSetting = DateSetting.ShortFormat
-    
-    var managedObjectContext: NSManagedObjectContext? = nil
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -63,7 +61,7 @@ class MasterViewController: UITableViewController {
     }
     
     private func setupObjects() {
-        let moc = self.managedObjectContext
+        let moc = MOCHelper.sharedInstance.moc
         let employeesFetch = NSFetchRequest(entityName: "DiaryRecord")
         
         do {
@@ -80,20 +78,9 @@ class MasterViewController: UITableViewController {
         let userDefaults = NSUserDefaults.standardUserDefaults()
         dateSetting = DateSetting(rawValue: userDefaults.integerForKey("dateSetting"))!
     }
-    
-    private func saveObjects() {
-        do {
-            try self.managedObjectContext!.save()
-        } catch {
-            fatalError("Failure to save diary records: \(error)")
-        }
-
-    }
 
     func insertNewObject(sender: AnyObject) {
-        self.detailViewController = self.storyboard?.instantiateViewControllerWithIdentifier("detailViewController") as? DetailViewController;
-        self.detailViewController?.managedObjectContext = self.managedObjectContext
-        self.navigationController?.pushViewController(self.detailViewController!, animated: true);
+        self.detailViewController = self.storyboard?.instantiateViewControllerWithIdentifier("detailViewController") as? DetailViewController;        self.navigationController?.pushViewController(self.detailViewController!, animated: true);
     }
 
     // MARK: - Segues
@@ -107,7 +94,6 @@ class MasterViewController: UITableViewController {
                 let objects = sortedObjects?.objectForKey(header) as! [DiaryRecord]
                 let object = objects[indexPath.row]
                 self.detailViewController = (segue.destinationViewController as! DetailViewController)
-                self.detailViewController?.managedObjectContext = self.managedObjectContext
             (segue.destinationViewController as! DetailViewController).detailItem = object
             }
         }
@@ -218,8 +204,8 @@ class MasterViewController: UITableViewController {
         if editingStyle == .Delete {
             let header = getHeaderForSection(indexPath.section)
             var objects = sortedObjects?.objectForKey(header) as! [DiaryRecord]
-            self.managedObjectContext?.deleteObject(objects[indexPath.row])
-            saveObjects()
+            MOCHelper.sharedInstance.deleteObject(objects[indexPath.row])
+            MOCHelper.sharedInstance.saveObjects()
             setupObjects()
             
             tableView.reloadData()
