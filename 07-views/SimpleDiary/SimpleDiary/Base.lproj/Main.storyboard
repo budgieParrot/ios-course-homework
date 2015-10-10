@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="NE7-hd-Ujn">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+    </dependencies>
+    <scenes>
+        <!--Custom view-->
+        <scene sceneID="K10-rX-rGC">
+            <objects>
+                <viewController id="l6b-Ec-gBI" customClass="CustomViewController" customModule="SimpleDiary" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="R6Z-gD-lDx"/>
+                        <viewControllerLayoutGuide type="bottom" id="8lD-Cq-vUM"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="gEG-gc-7i9">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="mKr-yZ-Fqy">
+                                <rect key="frame" x="127" y="14" width="121" height="29"/>
+                                <segments>
+                                    <segment title="Events"/>
+                                    <segment title="Timeline"/>
+                                </segments>
+                                <color key="tintColor" red="0.50196081400000003" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="segmentDidChanged:" destination="l6b-Ec-gBI" eventType="valueChanged" id="lIt-lG-CAY"/>
+                                </connections>
+                            </segmentedControl>
+                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CTC-R1-Hc6">
+                                <rect key="frame" x="20" y="61" width="335" height="549"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="CTC-R1-Hc6" firstAttribute="top" secondItem="mKr-yZ-Fqy" secondAttribute="bottom" constant="20" id="4SH-03-Nsw"/>
+                            <constraint firstItem="mKr-yZ-Fqy" firstAttribute="top" secondItem="R6Z-gD-lDx" secondAttribute="bottom" constant="7" id="7xc-Si-rHv"/>
+                            <constraint firstItem="mKr-yZ-Fqy" firstAttribute="centerX" secondItem="gEG-gc-7i9" secondAttribute="centerX" id="HGP-ky-qTk"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Custom view" id="zx2-FY-vlx"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="customViewContainer" destination="CTC-R1-Hc6" id="jcO-Zk-Yls"/>
+                        <outlet property="switchView" destination="mKr-yZ-Fqy" id="RYu-fz-9em"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zhY-EI-eZ5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4.5" y="-324.5"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="HaX-1F-hV0">
+            <objects>
+                <tabBarController id="NE7-hd-Ujn" sceneMemberID="viewController">
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="i0o-dg-fCy">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="l6b-Ec-gBI" kind="relationship" relationship="viewControllers" id="cua-gf-tl1"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CgC-er-KGs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1053" y="10"/>
+        </scene>
+    </scenes>
+</document>
