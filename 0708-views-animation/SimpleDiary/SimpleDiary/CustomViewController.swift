@@ -200,11 +200,13 @@ class CustomViewController: UIViewController {
     @IBAction func segmentDidChanged(sender: AnyObject) {
         if let segmentedControl = sender as? UISegmentedControl {
             clearContainer()
-            if segmentedControl.selectedSegmentIndex == 0 {
-                fillEvents()
-            } else {
-                fillTimeline()
-            }
+            UIView.animateWithDuration(0.5, delay: 0.0, options: [.BeginFromCurrentState], animations: { () -> Void in
+                if segmentedControl.selectedSegmentIndex == 0 {
+                    self.fillEvents()
+                } else {
+                    self.fillTimeline()
+                }
+            }, completion: nil)
         }
     }
 }
