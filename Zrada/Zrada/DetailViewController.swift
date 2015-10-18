@@ -40,12 +40,27 @@ class DetailViewController: UITableViewController {
     
     private func setupObjects() {
         let step1 = Step(index: 1, description: "Откажитесь сдавать вещи и идите дальше", lawLink: "www.lawlink")
-        let step2 = Step(index: 2, description: "В том случае, если охранник препятствует...", lawLink: "www.lawlink")
-        let s1 = Situation(shortName: "Охранник просит оставить вещи", description: "Охранник настойчиво просит оставить ваши личные вещи в камере хранения или просит показать содержимое...", steps: [step1, step2], place: (detailItem! as! Place))
+        let step2 = Step(index: 2, description: "В том случае, если охранник препятствует...В том случае, если охранник препятствует...В том случае, если охранник препятствует...В том случае, если охранник препятствует...В том случае, если охранник препятствует...В том случае, если охранник препятствуе!!!!", lawLink: "www.lawlink")
+        let s1 = Situation(shortName: "Охранник просит оставить вещи", description: "Охранник настойчиво просит оставить ваши личные вещи в камере хранения или просит показать содержимое...Охранник настойчиво просит оставить ваши личные вещи в камере хранения или просит показать содержимое...", steps: [step1, step2], place: (detailItem! as! Place))
         objects.append(s1)
         objects.append(s1)
         objects.append(s1)
         objects.append(s1)
+    }
+    
+    // MARK: - Segues
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "showDetail" {
+            if let indexPath = self.tableView.indexPathForSelectedRow {
+                let object = objects[indexPath.row]
+                let controller = (segue.destinationViewController as! UINavigationController).topViewController as! SituationDetailViewController
+                controller.situationDescriptionString = object.description!
+                controller.steps = object.steps!
+                controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
+                controller.navigationItem.leftItemsSupplementBackButton = true
+            }
+        }
     }
     
     // MARK: - Table View

@@ -13,7 +13,7 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
 
     var detailViewController: DetailViewController? = nil
     var objects = [Place]()
-
+    let locationManager: CLLocationManager = CLLocationManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,18 +47,19 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
         let settingsViewController = settingsNavController.topViewController as! SettingsViewController
         settingsViewController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
         settingsViewController.modalTransitionStyle = UIModalTransitionStyle.CoverVertical
+        settingsViewController.locationManager = self.locationManager
         
         presentViewController(settingsNavController, animated: true, completion: nil)
     }
     
     private func getCurrentLocation() {
-        let locationManager = CLLocationManager()
-        
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        locationManager.distanceFilter = 50;
-        
-        locationManager.startUpdatingLocation()
+        if(CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedWhenInUse) {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+            locationManager.distanceFilter = 500;
+            
+            locationManager.startUpdatingLocation()
+        }
     }
 
     // MARK: - Segues
@@ -102,7 +103,17 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         NSLog("got location")
-        
+        let geocoder = CLGeocoder()
+        if (locations.count > 0) {
+            geocoder.reverseGeocodeLocation(locations[0], completionHandler:
+                {(placemarks: [CLPlacemark]?, error: NSError?) in
+                    if error == nil && placemarks!.count > 0 {
+                        for pm in placemarks! {
+                            let v = pm.locality
+                        }
+                    }
+            })
+        }
     }
 
 }

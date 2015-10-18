@@ -7,16 +7,25 @@
 //
 
 import UIKit
+import CoreLocation
 
 class SettingsViewController: UIViewController {
     
     internal let GPS_SETTING_KEY = "gpsSetting"
+    
+    var locationManager: CLLocationManager?
     
     @IBOutlet weak var gpsSwitch: UISwitch!
     
     @IBAction func gpsSwitchChanged(sender: UISwitch) {
         userDefaults.setBool(sender.on, forKey: GPS_SETTING_KEY)
         userDefaults.synchronize()
+        
+        if(sender.on) {
+            if(CLLocationManager.authorizationStatus() != CLAuthorizationStatus.AuthorizedWhenInUse) {
+                locationManager?.requestWhenInUseAuthorization()
+            }
+        }
     }
     
     var gpsEnabled: Bool = false
