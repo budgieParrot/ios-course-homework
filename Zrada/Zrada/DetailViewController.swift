@@ -39,13 +39,33 @@ class DetailViewController: UITableViewController {
     }
     
     private func setupObjects() {
-        let step1 = Step(index: 1, description: "Откажитесь сдавать вещи и идите дальше", lawLink: "www.lawlink")
-        let step2 = Step(index: 2, description: "В том случае, если охранник препятствует...В том случае, если охранник препятствует...В том случае, если охранник препятствует...В том случае, если охранник препятствует...В том случае, если охранник препятствует...В том случае, если охранник препятствуе!!!!", lawLink: "www.lawlink")
-        let s1 = Situation(shortName: "Охранник просит оставить вещи", description: "Охранник настойчиво просит оставить ваши личные вещи в камере хранения или просит показать содержимое...Охранник настойчиво просит оставить ваши личные вещи в камере хранения или просит показать содержимое...", steps: [step1, step2], place: (detailItem! as! Place))
-        objects.append(s1)
-        objects.append(s1)
-        objects.append(s1)
-        objects.append(s1)
+        if let path: String = NSBundle.mainBundle().pathForResource("Data/situations", ofType: "json") {
+            if let json = NSData(contentsOfFile: path) {
+                do {
+                    let parsed: NSDictionary = try NSJSONSerialization.JSONObjectWithData(json, options: NSJSONReadingOptions.AllowFragments) as! NSDictionary
+                    print(parsed)
+                    let situationsArray: NSArray = parsed["situations"] as! NSArray
+                    for item in situationsArray {
+                        var steps = [Step]()
+                        if let stepsArray: NSArray = item["steps"] as? NSArray {
+                            for step in stepsArray {
+                                let index: Int = Int(step["index"] as! String)!
+                                let description = step["description"] as! String
+                                let lawLink = step["lawLink"] as! String
+                                steps.append(Step(index: index, description: description, lawLink: lawLink))
+                            }
+                        }
+                        let shortName = item["shortName"] as! String
+                        let description = item["description"] as! String
+                        let place = Int(item["place"] as! String)
+                        objects.append(Situation(shortName: shortName, description: description, steps: steps, place: place!))
+                    }
+                } catch let error as NSError {
+                    // Catch fires here, with an NSErrro being thrown from the JSONObjectWithData method
+                    print("A JSON parsing error occurred, here are the details:\n \(error)")
+                }
+            }
+        }
     }
     
     // MARK: - Segues

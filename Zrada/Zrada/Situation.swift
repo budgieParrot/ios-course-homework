@@ -11,10 +11,10 @@ class Situation {
     let shortName: String?
     let description: String?
     let steps:[Step]?
-    let place: Place?
+    let place: Int?
     
     init(shortName: String, description: String, steps: [Step],
-        place: Place) {
+        place: Int) {
         self.shortName = shortName
         self.description = description
         self.steps = steps

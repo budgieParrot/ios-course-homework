@@ -35,9 +35,23 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
     }
     
     private func setupObjects() {
-        objects.append(Place(name: "Супермаркет"))
-        objects.append(Place(name: "Ресторан"))
-        objects.append(Place(name: "Больница"))
+        if let path: String = NSBundle.mainBundle().pathForResource("Data/places", ofType: "json") {
+            if let json = NSData(contentsOfFile: path) {
+                do {
+                    let parsed: NSDictionary = try NSJSONSerialization.JSONObjectWithData(json, options: NSJSONReadingOptions.AllowFragments) as! NSDictionary
+                    print(parsed)
+                    let array: NSArray = parsed["places"] as! NSArray
+                    for item in array {
+                        let name: String = item["name"] as! String
+                        let id: Int = Int(item["id"] as! String)!
+                        objects.append(Place(name: name, id: id))
+                    }
+                } catch let error as NSError {
+                    // Catch fires here, with an NSErrro being thrown from the JSONObjectWithData method
+                    print("A JSON parsing error occurred, here are the details:\n \(error)")
+                }
+            }
+        }
     }
     
     func openSettings() {
