@@ -7,26 +7,36 @@
 //
 
 import UIKit
-import CoreLocation
+import AVFoundation
 
-class MasterViewController: UITableViewController, CLLocationManagerDelegate {
+class MasterViewController: UITableViewController {
 
     var detailViewController: DetailViewController? = nil
+    
     var objects = [Place]()
-    let locationManager: CLLocationManager = CLLocationManager()
+    var situationsCache: [Situation]?
+    
+    var audioRecorder: AVAudioRecorder?
+    var audioPlayer: AVAudioPlayer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "settings"), style: UIBarButtonItemStyle.Plain, target: self, action: "openSettings")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "record"), style: UIBarButtonItemStyle.Plain, target: self, action: "startRecord")
+        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
         
         setupObjects()
-        getCurrentLocation()
     }
-
-    override func viewWillAppear(animated: Bool) {
-        self.clearsSelectionOnViewWillAppear = self.splitViewController!.collapsed
-        super.viewWillAppear(animated)
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if let recorder = audioRecorder {
+            if (recorder.recording) {
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "stop"), style: UIBarButtonItemStyle.Plain, target: self, action: "stopRecord")
+                self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -54,26 +64,20 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
         }
     }
     
-    func openSettings() {
-        NSLog("in openSettings")
-        let settingsNavController = self.storyboard?.instantiateViewControllerWithIdentifier("settingsNavController") as! UINavigationController
+    func startRecord() {
+        NSLog("in start record")
         
-        let settingsViewController = settingsNavController.topViewController as! SettingsViewController
-        settingsViewController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
-        settingsViewController.modalTransitionStyle = UIModalTransitionStyle.CoverVertical
-        settingsViewController.locationManager = self.locationManager
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "stop"), style: UIBarButtonItemStyle.Plain, target: self, action: "stopRecord")
+        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
         
-        presentViewController(settingsNavController, animated: true, completion: nil)
+        (parentViewController?.parentViewController as? TabBarViewController)?.startRecord()
     }
     
-    private func getCurrentLocation() {
-        if(CLLocationManager.authorizationStatus() == CLAuthorizationStatus.AuthorizedWhenInUse) {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
-            locationManager.distanceFilter = 500;
-            
-            locationManager.startUpdatingLocation()
-        }
+    func stopRecord() {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "record"), style: UIBarButtonItemStyle.Plain, target: self, action: "startRecord")
+        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+        
+        (parentViewController?.parentViewController as? TabBarViewController)?.stopRecord()
     }
 
     // MARK: - Segues
@@ -82,10 +86,10 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow {
                 let object = objects[indexPath.row]
-                let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
+                let controller = (segue.destinationViewController as! DetailViewController)
                 controller.detailItem = object
-                controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
                 controller.navigationItem.leftItemsSupplementBackButton = true
+                controller.audioRecorder = self.audioRecorder
             }
         }
     }
@@ -111,23 +115,6 @@ class MasterViewController: UITableViewController, CLLocationManagerDelegate {
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return false
-    }
-    
-    // MARK: - Location
-    
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        NSLog("got location")
-        let geocoder = CLGeocoder()
-        if (locations.count > 0) {
-            geocoder.reverseGeocodeLocation(locations[0], completionHandler:
-                {(placemarks: [CLPlacemark]?, error: NSError?) in
-                    if error == nil && placemarks!.count > 0 {
-                        for pm in placemarks! {
-                            let v = pm.locality
-                        }
-                    }
-            })
-        }
     }
 
 }

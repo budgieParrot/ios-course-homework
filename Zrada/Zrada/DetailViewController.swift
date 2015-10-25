@@ -7,10 +7,16 @@
 //
 
 import UIKit
+import AVFoundation
 
-class DetailViewController: UITableViewController {
+class DetailViewController: SearchResultsViewController, UISearchResultsUpdating,
+    UISearchControllerDelegate {
 
     var objects = [Situation]()
+    var audioRecorder: AVAudioRecorder?
+    
+    var resultsTableController: SearchResultsViewController?
+    var searchController: UISearchController?
     
     var detailItem: AnyObject? {
         didSet {
@@ -31,6 +37,32 @@ class DetailViewController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.configureView()
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "record"), style: UIBarButtonItemStyle.Plain, target: self, action: "startRecord")
+        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+        
+        if let recorder = audioRecorder {
+            if (recorder.recording) {
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "stop"), style: UIBarButtonItemStyle.Plain, target: self, action: "stopRecord")
+                self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
+            }
+        }
+        
+        let rc = SearchResultsViewController()
+        resultsTableController = rc
+        // We want to be the delegate for our filtered table so didSelectRowAtIndexPath(_:) is called for both tables.
+        rc.tableView.delegate = self
+        
+        let sc = UISearchController(searchResultsController: resultsTableController)
+        searchController = sc
+        sc.searchResultsUpdater = self
+        sc.searchBar.sizeToFit()
+        tableView.tableHeaderView = sc.searchBar
+        
+        sc.delegate = self
+        sc.searchResultsUpdater = self
+        
+        definesPresentationContext = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -68,13 +100,29 @@ class DetailViewController: UITableViewController {
         }
     }
     
+    func startRecord() {
+        NSLog("in start record")
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "stop"), style: UIBarButtonItemStyle.Plain, target: self, action: "stopRecord")
+        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
+        
+        (parentViewController?.parentViewController as? TabBarViewController)?.startRecord()
+    }
+    
+    func stopRecord() {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "record"), style: UIBarButtonItemStyle.Plain, target: self, action: "startRecord")
+        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+        
+        (parentViewController?.parentViewController as? TabBarViewController)?.stopRecord()
+    }
+    
     // MARK: - Segues
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow {
                 let object = objects[indexPath.row]
-                let controller = (segue.destinationViewController as! UINavigationController).topViewController as! SituationDetailViewController
+                let controller = (segue.destinationViewController as! SituationDetailViewController)
                 controller.situationDescriptionString = object.description!
                 controller.steps = object.steps!
                 controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
@@ -106,7 +154,60 @@ class DetailViewController: UITableViewController {
         // Return false if you do not want the specified item to be editable.
         return false
     }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if let resultsController = resultsTableController
+            where tableView == resultsController.tableView {
+                let situation: Situation = resultsController.situations[indexPath.row]
+                self.tableView?.selectRowAtIndexPath(NSIndexPath(forRow: objects.indexOf({$0.description! == situation.description!})!, inSection: 1), animated: false, scrollPosition: .None)
+                self.performSegueWithIdentifier("showDetail", sender: nil)
+        }
+    }
 
+    // MARK: Search
+    
+    func updateSearchResultsForSearchController(searchController: UISearchController) {
+        let searchKey: String
+        if let text = searchController.searchBar.text {
+            searchKey = text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        } else {
+            searchKey = ""
+        }
+    
+        let searchResults = recordsWithNameStarting(searchKey)
+        resultsTableController?.situations = searchResults
+    }
+    
+    private func recordsWithNameStarting(namePrefix: String) -> [Situation] {
+        let array = objects.filter() { self.hasCaseInsensitivePrefix($0.description!, $0.steps!, namePrefix) }
+        return array
+    }
+    
+    private func hasCaseInsensitivePrefix(description: String, _ steps: [Step], _ prefix: String) -> Bool {
+        var isInDesc = false
+        var isInSteps = false
+        
+        print("prefix: ", prefix)
+        print("description: ", description)
+        if let _ = description.rangeOfString(prefix, options: [.CaseInsensitiveSearch], range: nil, locale: nil) {
+            isInDesc = true
+        }
+        
+        for step in steps {
+            print("step: ", step.description)
+            if let _ = step.description!.rangeOfString(prefix, options: [.CaseInsensitiveSearch], range: nil, locale: nil) {
+                print("prefix: ", prefix, " found in step: ", step.description)
+                isInSteps = true
+                break
+            }
+        }
+        
+        if (isInDesc || isInSteps) {
+            return true
+        }
+        
+        return false
+    }
 
 }
 
