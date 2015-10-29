@@ -1,8 +1,8 @@
 {"situations" : [
                  {"shortName" : "Охранник просит сдать ваши вещи", "description" : "Охранник настойчиво просит оставить ваши личные вещи в камере хранения или просит показать содержимое...", "place" : "0",
                  "steps": [
-                           {"index" : "1", "description" : "Откажитесь сдавать вещи и идите дальше", "lawLink" : "www.lawlink.com"},
-                           {"index" : "2", "description" : "Откажитесь сдавать вещи и идите дальше", "lawLink" : "www.lawlink.com"}
+                           {"index" : "1", "description" : "Откажитесь сдавать вещи и идите дальше", "lawLink" : "http://zakon3.rada.gov.ua/laws/show/254%D0%BA/96-%D0%B2%D1%80"},
+                           {"index" : "2", "description" : "Откажитесь сдавать вещи и идите дальше", "lawLink" : "http://zakon3.rada.gov.ua/laws/show/254%D0%BA/96-%D0%B2%D1%80"}
                            ]
                  },
                  {"shortName" : "Охранник просит сдать ваши вещи", "description" : "зеленый", "place" : "0",

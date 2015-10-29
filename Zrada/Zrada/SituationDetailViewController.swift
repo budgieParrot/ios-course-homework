@@ -8,7 +8,8 @@
 
 import UIKit
 
-class SituationDetailViewController:  UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SituationDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,
+    SituationDetailCellDelegate {
     
     
     @IBOutlet weak var situationDescription: UILabel!
@@ -47,13 +48,22 @@ class SituationDetailViewController:  UIViewController, UITableViewDelegate, UIT
         let object = steps[indexPath.row]
         cell.stepLabel.text = object.index?.description
         cell.descriptionText.text = object.description
-        cell.lawLabel.text = object.lawLink
+        cell.delegate = self
+        
         return cell
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return false
+    }
+    
+    func didPressLawButton(cell: SituationDetailCell?) {
+        if let c = cell {
+            let indexPath = self.tableView.indexPathForCell(c)
+            let application = UIApplication.sharedApplication()
+            application.openURL(NSURL.init(string: steps[(indexPath?.row)!].lawLink!)!)
+        }
     }
     
 }
