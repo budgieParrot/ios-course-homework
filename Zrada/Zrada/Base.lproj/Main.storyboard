@@ -7,6 +7,103 @@
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
+        <!--First Page View Controller-->
+        <scene sceneID="TGn-FP-3Ke">
+            <objects>
+                <viewController storyboardIdentifier="firstPageViewController" id="Hr0-yq-nyp" customClass="FirstPageViewController" customModule="Zrada" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="OSU-sm-Gky"/>
+                        <viewControllerLayoutGuide type="bottom" id="kE1-YI-NP2"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="R5T-5r-A7O">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tDj-bU-LNl">
+                                <rect key="frame" x="26" y="183.5" width="323" height="300"/>
+                                <animations/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="300" id="RK3-C2-u5v"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="tDj-bU-LNl" firstAttribute="leading" secondItem="R5T-5r-A7O" secondAttribute="leadingMargin" constant="10" id="QT1-2m-zHy"/>
+                            <constraint firstItem="tDj-bU-LNl" firstAttribute="centerY" secondItem="R5T-5r-A7O" secondAttribute="centerY" id="dzj-Fi-gQr"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="tDj-bU-LNl" secondAttribute="trailing" constant="10" id="ele-Vx-IGt"/>
+                        </constraints>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="container" destination="tDj-bU-LNl" id="KyA-No-Tg0"/>
+                        <segue destination="39j-Fi-xmr" kind="show" identifier="showSecondPageView" id="BKk-RE-6Wb"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lxb-aX-L82" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-172.5" y="-1529.5"/>
+        </scene>
+        <!--Second Page View Controller-->
+        <scene sceneID="OGb-LP-tOk">
+            <objects>
+                <viewController storyboardIdentifier="secondPageViewController" id="39j-Fi-xmr" customClass="SecondPageViewController" customModule="Zrada" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Vjq-e4-fC4"/>
+                        <viewControllerLayoutGuide type="bottom" id="nJ8-6x-PjO"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ND6-DP-5YA">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="j4Q-b1-hTq">
+                                <rect key="frame" x="36" y="40" width="190.5" height="33"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Досить кричати" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pwC-X0-p4y">
+                                        <rect key="frame" x="0.0" y="0.0" width="127.5" height="33"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mjq-0M-lPo">
+                                        <rect key="frame" x="132" y="0.0" width="58" height="33"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <state key="normal" title="#зрада"/>
+                                        <connections>
+                                            <action selector="hashtagDidClicked:" destination="39j-Fi-xmr" eventType="touchUpInside" id="Ild-cv-vRk"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <animations/>
+                                <color key="backgroundColor" red="0.82852108140000003" green="1" blue="0.36523299419999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="mjq-0M-lPo" secondAttribute="bottom" id="3pB-E6-VXa"/>
+                                    <constraint firstItem="pwC-X0-p4y" firstAttribute="top" secondItem="j4Q-b1-hTq" secondAttribute="top" id="HFX-dW-whz"/>
+                                    <constraint firstItem="mjq-0M-lPo" firstAttribute="top" secondItem="j4Q-b1-hTq" secondAttribute="top" id="JH7-bY-hGC"/>
+                                    <constraint firstItem="pwC-X0-p4y" firstAttribute="leading" secondItem="j4Q-b1-hTq" secondAttribute="leading" id="VAF-va-xnC"/>
+                                    <constraint firstAttribute="trailing" secondItem="mjq-0M-lPo" secondAttribute="trailing" id="cfk-Xn-zxO"/>
+                                    <constraint firstAttribute="bottom" secondItem="pwC-X0-p4y" secondAttribute="bottom" id="gwt-ym-Lj9"/>
+                                    <constraint firstItem="mjq-0M-lPo" firstAttribute="leading" secondItem="pwC-X0-p4y" secondAttribute="trailing" constant="5" id="nHZ-kc-Uqk"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="j4Q-b1-hTq" firstAttribute="leading" secondItem="ND6-DP-5YA" secondAttribute="leadingMargin" constant="20" id="QC9-37-dto"/>
+                            <constraint firstItem="j4Q-b1-hTq" firstAttribute="top" secondItem="Vjq-e4-fC4" secondAttribute="bottom" constant="20" id="QSs-Zo-PJR"/>
+                        </constraints>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kjc-EP-xNK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="286.5" y="-1529.5"/>
+        </scene>
         <!--Tab Bar View Controller-->
         <scene sceneID="DjA-c3-whJ">
             <objects>
@@ -20,11 +117,12 @@
                     <connections>
                         <segue destination="RMx-3f-FxP" kind="relationship" relationship="viewControllers" id="rhh-7I-5im"/>
                         <segue destination="Qcu-qt-Ix1" kind="relationship" relationship="viewControllers" id="FIN-h1-EXz"/>
+                        <segue destination="Hr0-yq-nyp" kind="show" identifier="showFirstTimeRunView" id="cIb-a7-mod"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oSq-sq-dwL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-109" y="-818"/>
+            <point key="canvasLocation" x="-835" y="-828"/>
         </scene>
         <!--Master-->
         <scene sceneID="pY4-Hu-kfo">
@@ -65,7 +163,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -284,7 +382,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <animations/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>

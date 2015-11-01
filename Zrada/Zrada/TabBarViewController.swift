@@ -12,6 +12,10 @@ import AVFoundation
 class TabBarViewController: UITabBarController, AVAudioRecorderDelegate,
     AVAudioPlayerDelegate, UITabBarControllerDelegate {
     
+    internal let FTR_SETTING_KEY = "didUserLaunchedAppBefore"
+    
+    let userDefaults = NSUserDefaults.standardUserDefaults()
+    
     var audioRecorder: AVAudioRecorder?
     var audioPlayer: AVAudioPlayer?
     
@@ -19,6 +23,17 @@ class TabBarViewController: UITabBarController, AVAudioRecorderDelegate,
         super.viewDidLoad()
         
         self.delegate = self
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        let didUserLaunchedAppBefore = userDefaults.boolForKey(FTR_SETTING_KEY)
+        
+        if (!didUserLaunchedAppBefore) {
+            self.performSegueWithIdentifier("showFirstTimeRunView", sender: self)
+            userDefaults.setBool(true, forKey: FTR_SETTING_KEY)
+        }
     }
     
     func tabBarController(tabBarController: UITabBarController, didSelectViewController viewController: UIViewController) {
