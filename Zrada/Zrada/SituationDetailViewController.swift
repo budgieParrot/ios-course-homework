@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class SituationDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,
     SituationDetailCellDelegate {
@@ -18,6 +19,8 @@ class SituationDetailViewController: UIViewController, UITableViewDelegate, UITa
     var situationDescriptionString: String?
     var steps = [Step]()
     
+    var audioRecorder: AVAudioRecorder?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -25,11 +28,46 @@ class SituationDetailViewController: UIViewController, UITableViewDelegate, UITa
             situationDescription.text = description
         }
         
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "record"), style: UIBarButtonItemStyle.Plain, target: self, action: "startRecord")
+        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+        
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 80
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let recorder = audioRecorder {
+            if (recorder.recording) {
+                self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "stop"), style: UIBarButtonItemStyle.Plain, target: self, action: "stopRecord")
+                self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
+            }
+        }
+    }
+    
+    func startRecord() {
+        NSLog("in start record")
+        UIView.animateWithDuration(0.2, animations: {
+            self.navigationItem.rightBarButtonItem?.image = UIImage(named: "stop")
+            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
+        })
+        self.navigationItem.rightBarButtonItem?.action = "stopRecord"
+        
+        (parentViewController?.parentViewController as? TabBarViewController)?.startRecord()
+    }
+    
+    func stopRecord() {
+        UIView.animateWithDuration(0.2, animations: {
+            self.navigationItem.rightBarButtonItem?.image = UIImage(named: "record")
+            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+        })
+        self.navigationItem.rightBarButtonItem?.action = "startRecord"
+        
+        (parentViewController?.parentViewController as? TabBarViewController)?.stopRecord()
     }
     
     // MARK: - Table View

@@ -41,13 +41,6 @@ class DetailViewController: SearchResultsViewController, UISearchResultsUpdating
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "record"), style: UIBarButtonItemStyle.Plain, target: self, action: "startRecord")
         self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
         
-        if let recorder = audioRecorder {
-            if (recorder.recording) {
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "stop"), style: UIBarButtonItemStyle.Plain, target: self, action: "stopRecord")
-                self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
-            }
-        }
-        
         let rc = SearchResultsViewController()
         resultsTableController = rc
         // We want to be the delegate for our filtered table so didSelectRowAtIndexPath(_:) is called for both tables.
@@ -63,6 +56,26 @@ class DetailViewController: SearchResultsViewController, UISearchResultsUpdating
         sc.searchResultsUpdater = self
         
         definesPresentationContext = true
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let recorder = audioRecorder {
+            if (recorder.recording) {
+                UIView.animateWithDuration(0.2, animations: {
+                    self.navigationItem.rightBarButtonItem?.image = UIImage(named: "stop")
+                    self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
+                })
+                self.navigationItem.rightBarButtonItem?.action = "stopRecord"
+            } else {
+                UIView.animateWithDuration(0.2, animations: {
+                    self.navigationItem.rightBarButtonItem?.image = UIImage(named: "record")
+                    self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+                })
+                self.navigationItem.rightBarButtonItem?.action = "startRecord"
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -102,16 +115,21 @@ class DetailViewController: SearchResultsViewController, UISearchResultsUpdating
     
     func startRecord() {
         NSLog("in start record")
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "stop"), style: UIBarButtonItemStyle.Plain, target: self, action: "stopRecord")
-        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
+        UIView.animateWithDuration(0.2, animations: {
+            self.navigationItem.rightBarButtonItem?.image = UIImage(named: "stop")
+            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
+        })
+        self.navigationItem.rightBarButtonItem?.action = "stopRecord"
         
         (parentViewController?.parentViewController as? TabBarViewController)?.startRecord()
     }
     
     func stopRecord() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "record"), style: UIBarButtonItemStyle.Plain, target: self, action: "startRecord")
-        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+        UIView.animateWithDuration(0.2, animations: {
+            self.navigationItem.rightBarButtonItem?.image = UIImage(named: "record")
+            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+        })
+        self.navigationItem.rightBarButtonItem?.action = "startRecord"
         
         (parentViewController?.parentViewController as? TabBarViewController)?.stopRecord()
     }
@@ -127,6 +145,7 @@ class DetailViewController: SearchResultsViewController, UISearchResultsUpdating
                 controller.steps = object.steps!
                 controller.navigationItem.leftBarButtonItem = self.splitViewController?.displayModeButtonItem()
                 controller.navigationItem.leftItemsSupplementBackButton = true
+                controller.audioRecorder = self.audioRecorder
             }
         }
     }

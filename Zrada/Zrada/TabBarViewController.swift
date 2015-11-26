@@ -33,7 +33,7 @@ class TabBarViewController: UITabBarController, AVAudioRecorderDelegate,
         if (!didUserLaunchedAppBefore) {
             self.performSegueWithIdentifier("showFirstTimeRunView", sender: self)
             userDefaults.setBool(true, forKey: FTR_SETTING_KEY)
-        }
+        } 
     }
     
     func tabBarController(tabBarController: UITabBarController, didSelectViewController viewController: UIViewController) {

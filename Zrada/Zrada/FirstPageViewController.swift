@@ -12,42 +12,63 @@ import AVFoundation
 class FirstPageViewController: UIViewController {
     
     var avPlayer: AVPlayer?
-    var secondView: UIView?
-    var layer: AVPlayerLayer?
     
     @IBOutlet weak var container: UIView!
+    
+    @IBAction func didHashTagClicked(sender: AnyObject) {
+        let application = UIApplication.sharedApplication()
+        application.openURL(NSURL.init(string: "https://twitter.com/search?q=%D0%B7%D1%80%D0%B0%D0%B4%D0%B0&src=typd")!)
+    }
+    
+    @IBAction func didStartButtonClicked(sender: AnyObject) {
+        dismissViewControllerAnimated(true, completion: nil);
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        if let path: String = NSBundle.mainBundle().pathForResource("Data/02", ofType: "mp4") {
+//            let fileUrl = NSURL(fileURLWithPath: path)
+//            let item = AVPlayerItem(URL: fileUrl)
+//            self.avPlayer = AVPlayer(playerItem: item)
+//            
+//            let layer = AVPlayerLayer(player: self.avPlayer)
+//            self.avPlayer!.actionAtItemEnd = .None;
+//            layer.videoGravity = AVLayerVideoGravityResizeAspect
+//            
+//            layer.frame = container.bounds
+////            layer.bounds = container.bounds
+//            container.layer.addSublayer(layer)
+//            
+//            avPlayer?.play()
+//            
+//            NSNotificationCenter.defaultCenter().addObserver(self, selector: "movieDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: item)
+//        }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         if let path: String = NSBundle.mainBundle().pathForResource("Data/02", ofType: "mp4") {
             let fileUrl = NSURL(fileURLWithPath: path)
             let item = AVPlayerItem(URL: fileUrl)
             self.avPlayer = AVPlayer(playerItem: item)
             
-            layer = AVPlayerLayer(player: self.avPlayer)
+            let layer = AVPlayerLayer(player: self.avPlayer)
             self.avPlayer!.actionAtItemEnd = .None;
+            layer.videoGravity = AVLayerVideoGravityResizeAspect
             
-            layer!.frame = CGRectMake(0, 0, container.frame.width, container.frame.height)
-            container.layer.addSublayer(layer!)
+            layer.frame = container.bounds
+            //            layer.bounds = container.bounds
+            container.layer.addSublayer(layer)
             
             avPlayer?.play()
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "movieDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: item)
-            
-            secondView = UIView(frame: self.view.frame)
-            secondView?.frame.origin.x = self.view.frame.origin.x
-            secondView?.frame.origin.y = self.view.frame.origin.y + self.view.frame.size.height
-            secondView?.backgroundColor = UIColor.redColor()
-            self.view.addSubview(secondView!)
         }
     }
     
     func movieDidFinishPlaying(notification: NSNotification) {
         print("finish")
-        UIView.animateWithDuration(1.5, animations: {
-            self.performSegueWithIdentifier("showSecondPageView", sender: self)
-        })
     }
     
 }

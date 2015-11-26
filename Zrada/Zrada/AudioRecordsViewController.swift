@@ -9,10 +9,13 @@
 import UIKit
 import AVFoundation
 
-class AudioRecordsViewController: UITableViewController, AVAudioPlayerDelegate {
+class AudioRecordsViewController: UITableViewController, AVAudioPlayerDelegate,
+    AudioRecordCellDelegate {
     
     var objects = [NSURL]()
     var audioPlayer: AVAudioPlayer?
+    var currentCell: AudioRecordCell?
+    let fileManager = NSFileManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,8 +28,6 @@ class AudioRecordsViewController: UITableViewController, AVAudioPlayerDelegate {
     }
     
     private func setupObjects() {
-        let fileManager = NSFileManager()
-        
         var documentsFolderUrl: NSURL?
         do {
             documentsFolderUrl = try fileManager.URLForDirectory(.DocumentDirectory,
@@ -35,6 +36,24 @@ class AudioRecordsViewController: UITableViewController, AVAudioPlayerDelegate {
                 create: false)
             
             objects = try fileManager.contentsOfDirectoryAtURL(documentsFolderUrl!, includingPropertiesForKeys: nil, options: .SkipsHiddenFiles)
+            
+            objects.sortInPlace({(a: NSURL, b: NSURL) -> Bool
+                in
+                var date1: AnyObject?
+                var date2: AnyObject?
+                do {
+                    try a.getResourceValue(&date1, forKey: NSURLCreationDateKey)
+                    try b.getResourceValue(&date2, forKey: NSURLCreationDateKey)
+                    if let d1 = date1 as? NSDate, d2 = date2 as? NSDate {
+                        return d1.compare(d2) == NSComparisonResult.OrderedDescending
+                    }
+                } catch let error as NSError {
+                    print("Error when sort audios: \(error.domain)")
+                }
+                
+                return false
+            })
+            
             self.tableView.reloadData()
             print(objects)
         } catch _ {
@@ -79,20 +98,51 @@ class AudioRecordsViewController: UITableViewController, AVAudioPlayerDelegate {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("AudioRecordCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("AudioRecordCell", forIndexPath: indexPath) as!AudioRecordCell
         
         let object = objects[indexPath.row]
-        cell.textLabel!.text = object.pathComponents?.last
+        cell.nameLabel.text = object.pathComponents?.last?.componentsSeparatedByString(".").first
+        cell.indexPath = indexPath
+        cell.delegate = self
         return cell
     }
     
     override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
-        return false
+        return true
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        playAudio(indexPath)
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == .Delete {
+            do {
+                try fileManager.removeItemAtURL(objects[indexPath.row])
+                objects.removeAtIndex(indexPath.row)
+            } catch let error as NSError {
+                print("Error when delete audio: \(error.domain)")
+            }
+            
+            tableView.reloadData()
+        }
+    }
+    
+//    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+//        playAudio(indexPath)
+//    }
+    
+    func didClickPlayButton(cell: AudioRecordCell, indexPath: NSIndexPath) {
+        print("index: %d", indexPath.row)
+        if let currentCell = self.currentCell {
+            currentCell.playButton.setTitle("Play", forState: .Normal)
+            self.audioPlayer?.stop()
+        }
+        
+        if cell != self.currentCell {
+            self.currentCell = cell
+            self.currentCell?.playButton.setTitle("Stop", forState: .Normal)
+            playAudio(indexPath)
+        } else {
+            self.currentCell = nil
+        }
     }
     
     // MARK: - Audio Player
@@ -100,6 +150,10 @@ class AudioRecordsViewController: UITableViewController, AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
         print("in audioPlayerDidFinishPlaying")
         self.audioPlayer = nil
+        if let currentCell = self.currentCell {
+            currentCell.playButton.setTitle("Play", forState: .Normal)
+            self.currentCell = nil
+        }
     }
     
 }

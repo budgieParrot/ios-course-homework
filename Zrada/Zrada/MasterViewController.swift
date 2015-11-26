@@ -17,26 +17,38 @@ class MasterViewController: UITableViewController {
     var situationsCache: [Situation]?
     
     var audioRecorder: AVAudioRecorder?
-    var audioPlayer: AVAudioPlayer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        setupObjects()
+        
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "record"), style: UIBarButtonItemStyle.Plain, target: self, action: "startRecord")
         self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
-        setupObjects()
+        if let recorder = audioRecorder {
+            if (recorder.recording) {
+                UIView.animateWithDuration(0.2, animations: {
+                    self.navigationItem.rightBarButtonItem?.image = UIImage(named: "stop")
+                    self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
+                })
+                self.navigationItem.rightBarButtonItem?.action = "stopRecord"
+            } else {
+                UIView.animateWithDuration(0.2, animations: {
+                    self.navigationItem.rightBarButtonItem?.image = UIImage(named: "record")
+                    self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+                })
+                self.navigationItem.rightBarButtonItem?.action = "startRecord"
+            }
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
-        if let recorder = audioRecorder {
-            if (recorder.recording) {
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "stop"), style: UIBarButtonItemStyle.Plain, target: self, action: "stopRecord")
-                self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
-            }
-        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -66,16 +78,21 @@ class MasterViewController: UITableViewController {
     
     func startRecord() {
         NSLog("in start record")
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "stop"), style: UIBarButtonItemStyle.Plain, target: self, action: "stopRecord")
-        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
+        UIView.animateWithDuration(0.2, animations: {
+            self.navigationItem.rightBarButtonItem?.image = UIImage(named: "stop")
+            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blackColor()
+        })
+        self.navigationItem.rightBarButtonItem?.action = "stopRecord"
         
         (parentViewController?.parentViewController as? TabBarViewController)?.startRecord()
     }
     
     func stopRecord() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "record"), style: UIBarButtonItemStyle.Plain, target: self, action: "startRecord")
-        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+        UIView.animateWithDuration(0.2, animations: {
+            self.navigationItem.rightBarButtonItem?.image = UIImage(named: "record")
+            self.navigationItem.rightBarButtonItem?.tintColor = UIColor.redColor()
+        })
+        self.navigationItem.rightBarButtonItem?.action = "startRecord"
         
         (parentViewController?.parentViewController as? TabBarViewController)?.stopRecord()
     }
